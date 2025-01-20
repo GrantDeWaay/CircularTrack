@@ -24,7 +24,7 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_type_id")
     @JsonIgnore
-    private ProductTypes productType;
+    private ProductType productType;
 
     public Integer getId() {
         return id;
@@ -50,11 +50,11 @@ public class Product {
         this.returnTimestamp = returnTimestamp;
     }
 
-    public ProductTypes getProductType() {
+    public ProductType getProductType() {
         return productType;
     }
 
-    public void setProductType(ProductTypes productType) {
+    public void setProductType(ProductType productType) {
         this.productType = productType;
     }
 

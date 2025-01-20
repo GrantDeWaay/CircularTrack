@@ -1,18 +1,17 @@
 package com.example.circularinventory.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
 
 @Entity
 @Table(name = "materials")
-public class Materials {
-
+public class Material {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer material_id;
+    @Column(name = "material_id") // Ensure this matches the actual column name in your database
+    Integer materialId;
 
     @Column
     String name;
@@ -20,15 +19,15 @@ public class Materials {
     @Column
     Integer amount;
 
-    @OneToMany(mappedBy = "material_id")
-    Set<ProductTypeMaterials> productTypeMaterialsSet;
+    @OneToMany(mappedBy = "materialId")
+    Set<ProductTypeMaterial> productTypeMaterialSet;
 
     public Integer getId() {
-        return material_id;
+        return materialId;
     }
 
     public void setId(Integer id) {
-        this.material_id = id;
+        this.materialId = id;
     }
 
     public String getName() {
@@ -47,11 +46,11 @@ public class Materials {
         this.amount = amount;
     }
 
-    public Set<ProductTypeMaterials> getProductTypeMaterialsSet() {
-        return productTypeMaterialsSet;
+    public Set<ProductTypeMaterial> getProductTypeMaterialsSet() {
+        return productTypeMaterialSet;
     }
 
-    public void setProductTypeMaterialsSet(Set<ProductTypeMaterials> productTypeMaterialsSet) {
-        this.productTypeMaterialsSet = productTypeMaterialsSet;
+    public void setProductTypeMaterialsSet(Set<ProductTypeMaterial> productTypeMaterialSet) {
+        this.productTypeMaterialSet = productTypeMaterialSet;
     }
 }

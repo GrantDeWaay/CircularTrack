@@ -6,14 +6,14 @@ import java.util.Set;
 
 @Entity
 @Table(name = "product_types")
-public class ProductTypes {
+public class ProductType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "product_type_id")
     Integer id;
 
-    @OneToMany(mappedBy = "product_type_id")
-    Set<ProductTypeMaterials> productTypeMaterialsSet;
+    @OneToMany(mappedBy = "productTypeId")
+    Set<ProductTypeMaterial> productTypeMaterialSet;
 
     @Column
     String name;
@@ -26,12 +26,12 @@ public class ProductTypes {
         this.id = id;
     }
 
-    public Set<ProductTypeMaterials> getProductTypeMaterialsSet() {
-        return productTypeMaterialsSet;
+    public Set<ProductTypeMaterial> getProductTypeMaterialsSet() {
+        return productTypeMaterialSet;
     }
 
-    public void setProductTypeMaterialsSet(Set<ProductTypeMaterials> productTypeMaterialsSet) {
-        this.productTypeMaterialsSet = productTypeMaterialsSet;
+    public void setProductTypeMaterialsSet(Set<ProductTypeMaterial> productTypeMaterialSet) {
+        this.productTypeMaterialSet = productTypeMaterialSet;
     }
 
     public String getName() {

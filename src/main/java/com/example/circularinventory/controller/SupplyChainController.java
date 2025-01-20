@@ -4,9 +4,9 @@ import com.example.circularinventory.dto.AddMaterialDto;
 import com.example.circularinventory.dto.CreateProductDto;
 import com.example.circularinventory.dto.CreateProductTypeDto;
 import com.example.circularinventory.dto.ReturnProductDto;
-import com.example.circularinventory.model.Materials;
+import com.example.circularinventory.model.Material;
 import com.example.circularinventory.model.Product;
-import com.example.circularinventory.model.ProductTypeMaterials;
+import com.example.circularinventory.model.ProductTypeMaterial;
 import com.example.circularinventory.service.MaterialsService;
 import com.example.circularinventory.service.ProductService;
 import com.example.circularinventory.service.ProductTypeService;
@@ -15,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/supplychain")
@@ -61,22 +59,22 @@ public class SupplyChainController {
 
     @PostMapping("/add-material")
     @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<Materials> addMaterial(@RequestBody AddMaterialDto addMaterialDto) {
-        Materials material = materialService.createNewMaterial(addMaterialDto.name, addMaterialDto.quantity);
+    public ResponseEntity<Material> addMaterial(@RequestBody AddMaterialDto addMaterialDto) {
+        Material material = materialService.createNewMaterial(addMaterialDto.name, addMaterialDto.quantity);
         return ResponseEntity.ok(material);
     }
 
     @PostMapping("/create-product-type")
     @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<List<ProductTypeMaterials>> createProductType(@RequestBody CreateProductTypeDto createProductTypeDto) {
-        List<ProductTypeMaterials> productTypeMaterialsList = productTypeService.createNewProductType(createProductTypeDto);
-        return ResponseEntity.ok(productTypeMaterialsList);
+    public ResponseEntity<List<ProductTypeMaterial>> createProductType(@RequestBody CreateProductTypeDto createProductTypeDto) {
+        List<ProductTypeMaterial> productTypeMaterialList = productTypeService.createNewProductType(createProductTypeDto);
+        return ResponseEntity.ok(productTypeMaterialList);
     }
 
     @GetMapping("/get-materials")
     @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<List<Materials>> getMaterials() {
-        List<Materials> productTypeMaterialsList = materialService.getAllMaterials();
-        return ResponseEntity.ok(productTypeMaterialsList);
+    public ResponseEntity<List<Material>> getMaterials() {
+        List<Material> productTypeMaterialList = materialService.getAllMaterials();
+        return ResponseEntity.ok(productTypeMaterialList);
     }
 }

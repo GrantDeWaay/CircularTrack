@@ -2,13 +2,13 @@ package com.example.circularinventory.service;
 
 import com.example.circularinventory.dto.CreateProductDto;
 import com.example.circularinventory.dto.ReturnProductDto;
-import com.example.circularinventory.model.Materials;
+import com.example.circularinventory.model.Material;
 import com.example.circularinventory.model.Product;
-import com.example.circularinventory.model.ProductTypeMaterials;
-import com.example.circularinventory.model.ProductTypes;
-import com.example.circularinventory.repository.MaterialsRepository;
+import com.example.circularinventory.model.ProductTypeMaterial;
+import com.example.circularinventory.model.ProductType;
+import com.example.circularinventory.repository.MaterialRepository;
 import com.example.circularinventory.repository.ProductRepository;
-import com.example.circularinventory.repository.ProductTypesRepository;
+import com.example.circularinventory.repository.ProductTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,17 +20,17 @@ import java.util.Set;
 public class ProductService {
 
     private final ProductTypeService productTypeService;
-    private final ProductTypesRepository productTypesRepository;
+    private final ProductTypeRepository productTypeRepository;
     private final ProductRepository productRepository;
-    private final MaterialsRepository materialsRepository;
+    private final MaterialRepository materialRepository;
 
     @Autowired
-    public ProductService(ProductTypeService productTypeService, ProductTypesRepository productTypesRepository,
-                          ProductRepository productRepository, MaterialsRepository materialsRepository) {
+    public ProductService(ProductTypeService productTypeService, ProductTypeRepository productTypeRepository,
+                          ProductRepository productRepository, MaterialRepository materialRepository) {
         this.productTypeService = productTypeService;
-        this.productTypesRepository = productTypesRepository;
+        this.productTypeRepository = productTypeRepository;
         this.productRepository = productRepository;
-        this.materialsRepository = materialsRepository;
+        this.materialRepository = materialRepository;
     }
 
 
@@ -40,15 +40,15 @@ public class ProductService {
         }
         Product product = new Product();
         product.setPickupTimestamp(new Date().toInstant());
-        ProductTypes productTypes = productTypesRepository.getReferenceById(createProductDto.productTypeId);
-        Set<ProductTypeMaterials> productTypeMaterials = productTypes.getProductTypeMaterialsSet();
-        for(ProductTypeMaterials productTypeMaterial: productTypeMaterials) {
+        ProductType productType = productTypeRepository.getReferenceById(createProductDto.productTypeId);
+        Set<ProductTypeMaterial> productTypeMaterials = productType.getProductTypeMaterialsSet();
+        for(ProductTypeMaterial productTypeMaterial: productTypeMaterials) {
             Integer amountToSubtract = productTypeMaterial.getAmount();
-            Materials material = productTypeMaterial.getMaterial_id();
+            Material material = productTypeMaterial.getMaterialId();
             material.setAmount(material.getAmount()- amountToSubtract);
-            materialsRepository.save(material);
+            materialRepository.save(material);
         }
-        product.setProductType(productTypes);
+        product.setProductType(productType);
 
         return productRepository.save(product);
     }
@@ -56,21 +56,20 @@ public class ProductService {
     public Product returnProduct(ReturnProductDto returnProductDto) {
         Product product = productRepository.getReferenceById(returnProductDto.productId);
         product.setReturnTimestamp(new Date().toInstant());
-        ProductTypes productTypes = productTypesRepository.getReferenceById(product.getProductType().getId());
-        Set<ProductTypeMaterials> productTypeMaterials = productTypes.getProductTypeMaterialsSet();
-        for(ProductTypeMaterials productTypeMaterial: productTypeMaterials) {
+        ProductType productType = productTypeRepository.getReferenceById(product.getProductType().getId());
+        Set<ProductTypeMaterial> productTypeMaterials = productType.getProductTypeMaterialsSet();
+        for(ProductTypeMaterial productTypeMaterial: productTypeMaterials) {
             double amountToAdd = productTypeMaterial.getAmount();
-            amountToAdd = amountToAdd/productTypeMaterial.getRetrievable_percent();
-            Materials material = productTypeMaterial.getMaterial_id();
+            amountToAdd = amountToAdd/productTypeMaterial.getRetrievablePercent();
+            Material material = productTypeMaterial.getMaterialId();
             material.setAmount(material.getAmount()+ (Integer)((int) amountToAdd));
-            materialsRepository.save(material);
+            materialRepository.save(material);
         }
 
         return productRepository.save(product);
     }
 
     public List<Product> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        return products;
+        return productRepository.findAll();
     }
 }
