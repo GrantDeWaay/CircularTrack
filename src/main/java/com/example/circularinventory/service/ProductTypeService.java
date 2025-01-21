@@ -1,8 +1,6 @@
 package com.example.circularinventory.service;
 
-import com.example.circularinventory.dto.CreateProductTypeDto;
-import com.example.circularinventory.dto.ProductMaterial;
-import com.example.circularinventory.dto.UpdateProductTypeDto;
+import com.example.circularinventory.dto.*;
 import com.example.circularinventory.model.*;
 import com.example.circularinventory.repository.*;
 import jakarta.transaction.Transactional;
@@ -11,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductTypeService {
@@ -55,7 +55,7 @@ public class ProductTypeService {
 
     @Transactional
     public List<ProductTypeMaterial> updateProductType(UpdateProductTypeDto updateProductTypeDto){
-        List<ProductMaterial> productMaterialList = updateProductTypeDto.productMaterials;
+        List<ProductMaterial> productMaterialList = updateProductTypeDto.materials;
         List<ProductTypeMaterial> productTypeMaterialList = new ArrayList<>();
         ProductType productType = productTypeRepository.getReferenceById(updateProductTypeDto.id);
         productTypeMaterialRepository.deleteAllByProductTypeIdEquals(productType);
@@ -78,8 +78,35 @@ public class ProductTypeService {
         return productTypeMaterialList;
     }
 
-    public List<ProductType> getProductTypes() {
-        return productTypeRepository.findAll();
+    public List<ProductTypeResponseDto> getProductTypes() {
+        List<ProductType> productTypes = productTypeRepository.findAll();
+        return productTypes.stream().map(this::mapToDto).collect(Collectors.toList());
+    }
+
+    public ProductTypeResponseDto getProductTypeById(GetProductTypeByIdDto getProductTypeByIdDto) {
+        Optional<ProductType> productTypes = productTypeRepository.findById(getProductTypeByIdDto.id);
+        if(productTypes.isPresent()){
+            ProductType productType = productTypes.get();
+            return mapToDto(productType);
+        }
+        return null;
+    }
+
+    private ProductTypeResponseDto mapToDto(ProductType productType) {
+        ProductTypeResponseDto dto = new ProductTypeResponseDto();
+        dto.setId(productType.getId());
+        dto.setName(productType.getName());
+        dto.setMaterials(productType.getProductTypeMaterialsSet().stream().map(this::mapToMaterialDto).collect(Collectors.toList()));
+        return dto;
+    }
+
+    private ProductTypeResponseDto.MaterialDto mapToMaterialDto(ProductTypeMaterial productTypeMaterial) {
+        ProductTypeResponseDto.MaterialDto materialDto = new ProductTypeResponseDto.MaterialDto();
+        materialDto.setMaterialId(productTypeMaterial.getMaterialId().getId());
+        materialDto.setMaterialName(productTypeMaterial.getMaterialId().getName());
+        materialDto.setAmount(productTypeMaterial.getAmount());
+        materialDto.setRetrievablePercent(productTypeMaterial.getRetrievablePercent());
+        return materialDto;
     }
 
     public boolean isValidProductTypeId(int productTypeId) {

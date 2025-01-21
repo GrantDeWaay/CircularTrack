@@ -5,5 +5,6 @@ import java.util.List;
 
 public class UpdateProductTypeDto {
     public Integer id;
-    public List<ProductMaterial> productMaterials;
+    public String name;
+    public List<ProductMaterial> materials;
 }

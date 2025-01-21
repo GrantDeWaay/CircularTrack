@@ -1,6 +1,8 @@
 package com.example.circularinventory.controller;
 
 import com.example.circularinventory.dto.CreateProductTypeDto;
+import com.example.circularinventory.dto.GetProductTypeByIdDto;
+import com.example.circularinventory.dto.ProductTypeResponseDto;
 import com.example.circularinventory.dto.UpdateProductTypeDto;
 import com.example.circularinventory.model.ProductTypeMaterial;
 import com.example.circularinventory.model.ProductType;
@@ -31,8 +33,8 @@ public class ProductTypeController {
 
     @GetMapping("/get-product-types")
     @CrossOrigin(origins = "http://localhost:3000")
-    public ResponseEntity<List<ProductType>> getProductTypes() {
-        List<ProductType> productTypes = productTypeService.getProductTypes();
+    public ResponseEntity<List<ProductTypeResponseDto>> getProductTypes() {
+        List<ProductTypeResponseDto> productTypes = productTypeService.getProductTypes();
         return ResponseEntity.ok(productTypes);
     }
 
@@ -41,5 +43,12 @@ public class ProductTypeController {
     public ResponseEntity<List<ProductTypeMaterial>> updateProductType(@RequestBody UpdateProductTypeDto updateProductTypeDto) {
         List<ProductTypeMaterial> productTypeMaterialList = productTypeService.updateProductType(updateProductTypeDto);
         return ResponseEntity.ok(productTypeMaterialList);
+    }
+
+    @PostMapping("/get-product-type-by-id")
+    @CrossOrigin(origins = "http://localhost:3000")
+    public ResponseEntity<ProductTypeResponseDto> getProductTypeById(@RequestBody GetProductTypeByIdDto getProductTypeByIdDto) {
+        ProductTypeResponseDto productType = productTypeService.getProductTypeById(getProductTypeByIdDto);
+        return ResponseEntity.ok(productType);
     }
 }
